@@ -4,7 +4,7 @@ import Titles from './components/titles';
 import Form from './components/form';
 import './App.css';
 
-const Apikey = 'http://api.openweathermap.org/data/2.5/box/city?bbox=12,32,15,37,10';
+const Apikey = '1f7e74434dacd114733c30d29635f23f';
 
 // app-component
 
