@@ -1,67 +1,76 @@
-import React from 'react';
-import Titles from './components/titles';
-import Weather from './components/weather';
-import Form from './components/form';
+import React, { useState } from 'react';
 
-const API_KEY = '5aac476a0674676d51ece2175d1f3a86';
-
-class App extends React.Component {
-	state = {
-		temperature: undefined,
-		city: undefined,
-		country: undefined,
-		humidity: undefined,
-		description: undefined,
-		error: undefined
-	}
-
-	getWeather = async (e) => {
-		e.preventDefault(); debugger
-
-		const city = e.target.elements.city.value;
-
-		const country = e.target.elements.country.value;
-			
-		const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}`);
-		
-		const response = await api_call.json();
-		
-		console.log(response);
-
-		if (city && country) {
-			this.setState({
-				temperature: response.main.temp,
-				city: response.name,
-				country: response.sys.country,
-				humidity: response.main.humidity,
-				description: response.weather[0].description,
-				error: ""
-			}) 
-		} else {
-			this.setState({
-				error: "Please input valid data..."
-			})
-		}
-	}
-
-	render() {
-		return ( 
-			<div >
-				<Titles></Titles>
-				
-				<Form loadWeather={this.getWeather}>
-					
-				</Form>
-
-				<Weather
-					temperature={this.state.temperature}
-					city={this.state.city}
-					country={this.state.country}
-					humidity={this.state.humidity}
-					description={this.state.description}
-					error={this.state.error} />
-			</div>
-		)
-	}
+const api = {
+	key: "00350e82ee167cd2f2157a1649ccefaa",
+	base: "https://api.openweathermap.org/data/2.5/"
 }
-export default App;
+
+function App() {
+
+	const [query, setQuery] = useState('');
+	const [weather, setWeather] = useState({});
+
+	const search = evt => {
+		if(evt.key === "Enter") {
+			fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
+			.then(res => res.json())
+			.then(result => {
+				setWeather(result);
+				setQuery('');
+				console.log(result);
+				console.log('value of weather after fetching',weather);
+			});
+		}
+		
+	}
+
+	const dateBuilder = (d) => {
+		let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+		 'September', 'October', 'November', 'December'];
+		let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thrusday', 'Friday', 'Saturday'];
+
+		let day = days[d.getDay()];
+		let date = d.getDate();
+		let month = months[d.getMonth()];
+		let year = d.getFullYear();
+
+		return `${day} ${date} ${month} ${year}`
+	}
+	console.log('weather', weather)
+	console.log('weather2', weather.main)
+	return(
+		<div className={(typeof weather.main != "undefined") 
+			? ((weather.main.temp > 16) 
+				? 'app warm' 
+				: 'app') 
+			: 'app'}>
+			<main>
+				<div className="search-box">
+					<input
+						type="text"
+						className="search-bar"
+						placeholder="search..."
+						onChange={e =>setQuery(e.target.value)}
+						value={query}
+						onKeyPress={search}
+					/>
+				</div>
+				{(typeof weather.main !="undefined") ? (
+					<div>
+						<div className="location-box">
+							<div className="location">{weather.name}, {weather.sys.country}</div>
+							<div className="date">{dateBuilder(new Date())}</div>
+						</div>
+						<div className="weather-box">
+							<div className="temp">{Math.round(weather.main.temp)}°c</div>
+							<div className="weather">{weather.weather[0].main}</div>
+						</div>
+					</div>
+				) : ('')}
+				
+			</main>
+		</div>
+	)
+}
+
+ export default App;
