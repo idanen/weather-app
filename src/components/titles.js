@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Titles(props){
+const Titles = (props) => {
     return (
         <div>
             <h1> Weather App</h1>

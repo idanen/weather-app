@@ -1,8 +1,8 @@
 import React from 'react';
 
-function Form (props) {
+const Form = (props) => {
     return (
-        <form onSubmit={this.props.loadWeather}>
+        <form onSubmit={props.loadWeather}>
             <input type="text" name="city " placeholder="City..."></input>
             <input type="text" name="country " placeholder="Country..."></input>
             <button>Get Weather</button>
