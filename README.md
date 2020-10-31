@@ -1,2 +1,2 @@
 #### created react app
-`` npx create-react-ap app-name ``
+`` npx create-react-app app-name ``
